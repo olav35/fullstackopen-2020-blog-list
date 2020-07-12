@@ -84,6 +84,16 @@ test('lack of title and url property results in 400 Bad Request status code', as
   expect(response.status).toBe(400)
 })
 
+test('blog deletion works', async () => {
+  const initialCount = await Blog.countDocuments({})
+  const blog = await Blog.findOne({})
+
+  await api.delete(`/api/blogs/${blog.id}`).expect(200)
+
+  const count = await Blog.countDocuments({})
+  expect(count).toBe(initialCount - 1)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
