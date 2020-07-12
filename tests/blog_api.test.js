@@ -50,7 +50,7 @@ test('lack of likes property results in 0 in api', async () => {
   }
 
   const response = await api.post('/api/blogs').send(blog)
-  expect(response.body.likes).toBe(0)
+  expect(response.body.likes).toBe('0')
 })
 
 afterAll(() => {
