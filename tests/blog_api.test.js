@@ -5,7 +5,7 @@ const app = require('../app')
 
 const api = supertest(app)
 
-test('blogs are returned as json', async () => {
+test('blogs are succesfully returned as json', async () => {
   await api
     .get('/api/blogs')
     .expect(200)
@@ -17,6 +17,12 @@ test('the number of blogs returned by the api is equal to the number of blogs in
   const count = await Blog.count({})
 
   expect(response.body).toHaveLength(count)
+})
+
+test('the id of blogs is given as the id key', async () => {
+  const response = await api.get('/api/blogs')
+
+  expect(response.body[0].id).toBeDefined()
 })
 
 afterAll(() => {
