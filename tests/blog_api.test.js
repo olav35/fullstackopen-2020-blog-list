@@ -25,6 +25,23 @@ test('the id of blogs is given as the id key', async () => {
   expect(response.body[0].id).toBeDefined()
 })
 
+test('post creation works', async () => {
+  const initialLength = await Blog.countDocuments({})
+
+  const blog = {
+    title: 'Lorem ipsum',
+    author: 'Olav Fosse',
+    url: 'https://fossegr.im',
+    likes: 99912
+  }
+
+  await api.post('/api/blogs').send(blog).expect(201)
+
+  const response = await api.get('/api/blogs')
+
+  expect(response.body).toHaveLength(initialLength + 1)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
