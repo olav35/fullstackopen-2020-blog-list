@@ -94,6 +94,16 @@ test('blog deletion works', async () => {
   expect(count).toBe(initialCount - 1)
 })
 
+test('blog liking works', async () => {
+  const blog = await Blog.findOne({})
+  blog.likes = Number(blog.likes) + 5
+
+  await api.put(`/api/blogs/${blog._id}`).send(blog) // .toObject?
+
+  const updatedBlog = await Blog.findById(blog._id)
+  expect(updatedBlog.likes).toBe(blog.likes)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
