@@ -74,6 +74,16 @@ test('lack of likes property results in 0 in api', async () => {
   expect(response.body.likes).toBe('0')
 })
 
+test('lack of title and url property results in 400 Bad Request status code', async () => {
+  const blog = {
+    author: 'Olav Fosse',
+    likes: 10
+  }
+
+  const response = await api.post('/api/blogs').send(blog)
+  expect(response.status).toBe(400)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
