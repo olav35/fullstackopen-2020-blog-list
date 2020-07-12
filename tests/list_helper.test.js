@@ -114,3 +114,27 @@ describe('most blogs', () => {
     expect(result).toEqual(blogger)
   })
 })
+
+describe('most likes', () => {
+  test('the blogger with the most likes in a singleton blog list is the only blogger', () => {
+    const result = listHelper.mostLikes(singleton)
+
+    const blogger = {
+      author: 'Edsger W. Dijkstra',
+      likes: 5
+    }
+
+    expect(result).toEqual(blogger)
+  })
+
+  test('the blogger with the most likes in a blog list is the blogger with the most likes', () =>  {
+    const result = listHelper.mostLikes(blogs)
+
+    const blogger = {
+      author: 'Edsger W. Dijkstra',
+      likes: 17
+    }
+
+    expect(result).toEqual(blogger)
+  })
+})
