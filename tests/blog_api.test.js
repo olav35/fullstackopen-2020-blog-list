@@ -14,7 +14,7 @@ test('blogs are succesfully returned as json', async () => {
 
 test('the number of blogs returned by the api is equal to the number of blogs in the database', async () => {
   const response = await api.get('/api/blogs')
-  const count = await Blog.count({})
+  const count = await Blog.countDocuments({})
 
   expect(response.body).toHaveLength(count)
 })
