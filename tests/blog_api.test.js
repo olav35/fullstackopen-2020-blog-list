@@ -5,6 +5,27 @@ const app = require('../app')
 
 const api = supertest(app)
 
+const initialBlogs = [
+  {
+    title: 'Lorem ipsum',
+    author: 'Olav Fosse',
+    url: 'https://fossegr.im'
+  },
+  {
+    title: 'Lorem ipsum',
+    author: 'Ola Normann',
+    url: 'https://fossegr.im/emacs/exploring-emacs/2020/06/21/exploring-emacs-II-installation-and-basic-usage.html',
+    likes: 99912
+  }
+]
+
+beforeEach(async () => {
+  await Blog.deleteMany({})
+
+  const blogs = initialBlogs.map(blog => new Blog(blog).save())
+  await Promise.all(blogs)
+})
+
 test('blogs are succesfully returned as json', async () => {
   await api
     .get('/api/blogs')
