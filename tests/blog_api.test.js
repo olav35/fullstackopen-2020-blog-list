@@ -42,6 +42,17 @@ test('post creation works', async () => {
   expect(response.body).toHaveLength(initialLength + 1)
 })
 
+test('lack of likes property results in 0 in api', async () => {
+  const blog = {
+    title: 'Lorem ipsum',
+    author: 'Olav Fosse',
+    url: 'https://fossegr.im'
+  }
+
+  const response = await api.post('/api/blogs').send(blog)
+  expect(response.body.likes).toBe(0)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
