@@ -46,6 +46,11 @@ test('does not return the password hash', async () => {
   expect(response.body.passwordHash).toBeUndefined()
 })
 
+test('returns all users', async () => {
+  const response = await api.get('/api/users')
+  expect(response.body).toHaveLength(initialUsers.length)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
