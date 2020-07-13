@@ -55,44 +55,6 @@ test('the id of blogs is given as the id key', async () => {
   expect(response.body[0].id).toBeDefined()
 })
 
-test('post creation works', async () => {
-  const initialLength = await Blog.countDocuments({})
-
-  const blog = {
-    title: 'Lorem ipsum',
-    author: 'Olav Fosse',
-    url: 'https://fossegr.im',
-    likes: 99912
-  }
-
-  await api.post('/api/blogs').send(blog).expect(201)
-
-  const response = await api.get('/api/blogs')
-
-  expect(response.body).toHaveLength(initialLength + 1)
-})
-
-test('lack of likes property results in 0 in api', async () => {
-  const blog = {
-    title: 'Lorem ipsum',
-    author: 'Olav Fosse',
-    url: 'https://fossegr.im'
-  }
-
-  const response = await api.post('/api/blogs').send(blog)
-  expect(response.body.likes).toBe('0')
-})
-
-test('lack of title and url property results in 400 Bad Request status code', async () => {
-  const blog = {
-    author: 'Olav Fosse',
-    likes: 10
-  }
-
-  const response = await api.post('/api/blogs').send(blog)
-  expect(response.status).toBe(400)
-})
-
 test('blog deletion works', async () => {
   const initialCount = await Blog.countDocuments({})
   const blog = await Blog.findOne({})
