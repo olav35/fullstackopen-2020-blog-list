@@ -2,8 +2,13 @@ const mongoose = require('mongoose')
 const Blog = require('../models/blog')
 const supertest = require('supertest')
 const app = require('../app')
+const {INTERNET_SPEED} = require('../utils/config')
 
 const api = supertest(app)
+
+if(INTERNET_SPEED === 'slow'){
+  jest.setTimeout(30000)
+}
 
 const initialBlogs = [
   {
@@ -37,10 +42,14 @@ test('the number of blogs returned by the api is equal to the number of blogs in
   const response = await api.get('/api/blogs')
   const count = await Blog.countDocuments({})
 
+  console.log(response)
+  console.log(count)
+
   expect(response.body).toHaveLength(count)
 })
 
 test('the id of blogs is given as the id key', async () => {
+  // getting it retries nothing hmmm..
   const response = await api.get('/api/blogs')
 
   expect(response.body[0].id).toBeDefined()

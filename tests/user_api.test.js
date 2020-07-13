@@ -2,8 +2,13 @@ const mongoose = require('mongoose')
 const User = require('../models/user')
 const supertest = require('supertest')
 const app = require('../app')
+const {INTERNET_SPEED} = require('../utils/config')
 
 const api = supertest(app)
+
+if(INTERNET_SPEED === 'slow'){
+  jest.setTimeout(30000)
+}
 
 const initialUsers = [
   {
