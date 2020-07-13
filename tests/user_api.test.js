@@ -8,12 +8,12 @@ const api = supertest(app)
 const initialUsers = [
   {
     name: 'Ola Normann',
-    username: 'normann',
+    username: 'oNormann',
     passwordHash: 'hufdhauifdbuia'
   },
   {
     name: 'Kari Normann',
-    username: 'normann',
+    username: 'kNormann',
     passwordHash: 'bfdhiabuiffbudi'
   }
 ]
