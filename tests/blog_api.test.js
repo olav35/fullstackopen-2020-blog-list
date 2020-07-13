@@ -1,8 +1,11 @@
 const mongoose = require('mongoose')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const supertest = require('supertest')
 const app = require('../app')
 const {INTERNET_SPEED} = require('../utils/config')
+const bcrypt = require('bcrypt')
+
 
 const api = supertest(app)
 
@@ -24,11 +27,29 @@ const initialBlogs = [
   }
 ]
 
+const userPassword = 'olaverbest'
+
+const userObject = {
+  name: 'Olav',
+  username: 'olav',
+  passwordHash: bcrypt.hashSync(userPassword, 10)
+}
+
+
 beforeEach(async () => {
   await Blog.deleteMany({})
+  await User.deleteMany({})
 
-  const blogs = initialBlogs.map(blog => new Blog(blog).save())
-  await Promise.all(blogs)
+  const user = new User(userObject)
+
+  initialBlogs.forEach(async blogObject => {
+    blogObject.user = user._id
+    const blog = new Blog(blogObject)
+    await blog.save()
+    user.blogs = user.blogs.concat(blog._id)
+  })
+
+  await user.save()
 })
 
 test('blogs are succesfully returned as json', async () => {
@@ -53,6 +74,44 @@ test('the id of blogs is given as the id key', async () => {
   const response = await api.get('/api/blogs')
 
   expect(response.body[0].id).toBeDefined()
+})
+
+test('post creation works', async () => {
+  const initialLength = await Blog.countDocuments({})
+
+  const blog = {
+    title: 'Lorem ipsum',
+    author: 'Olav Fosse',
+    url: 'https://fossegr.im',
+    likes: 99912
+  }
+
+  await api.post('/api/blogs').send(blog).expect(201)
+
+  const response = await api.get('/api/blogs')
+
+  expect(response.body).toHaveLength(initialLength + 1)
+})
+
+test('lack of likes property results in 0 in api', async () => {
+  const blog = {
+    title: 'Lorem ipsum',
+    author: 'Olav Fosse',
+    url: 'https://fossegr.im'
+  }
+
+  const response = await api.post('/api/blogs').send(blog)
+  expect(response.body.likes).toBe('0')
+})
+
+test('lack of title and url property results in 400 Bad Request status code', async () => {
+  const blog = {
+    author: 'Olav Fosse',
+    likes: 10
+  }
+
+  const response = await api.post('/api/blogs').send(blog)
+  expect(response.status).toBe(400)
 })
 
 test('blog deletion works', async () => {
