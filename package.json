@@ -18,6 +18,7 @@
     "mongoose": "^5.9.23"
   },
   "devDependencies": {
+    "@types/jest": "^26.0.4",
     "eslint": "^7.4.0",
     "jest": "^26.1.0",
     "nodemon": "^2.0.4",
