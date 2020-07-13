@@ -51,6 +51,68 @@ test('returns all users', async () => {
   expect(response.body).toHaveLength(initialUsers.length)
 })
 
+test('not created if no username', async () => {
+  const initialCount = await User.countDocuments({})
+  let noUsername = {...userObject}
+  delete noUsername.username
+
+  const response = await api.post('/api/users').send(noUsername)
+  const count = await User.countDocuments({})
+
+  expect(count).toBe(initialCount)
+  expect(response.status).toBe(400)
+  expect(response.body.error).toBeDefined()
+})
+
+test('not created if no password', async () => {
+  const initialCount = await User.countDocuments({})
+  let noPassword = {...userObject}
+  delete noPassword.password
+
+  const response = await api.post('/api/users').send(noPassword)
+  const count = await User.countDocuments({})
+
+  expect(count).toBe(initialCount)
+  expect(response.status).toBe(400)
+  expect(response.body.error).toBeDefined()
+})
+
+test('not created if username is not unique', async () => {
+  const initialCount = await User.countDocuments({})
+  await api.post('/api/users').send(userObject)
+  const response = await api.post('/api/users').send(userObject)
+  const count = await User.countDocuments({})
+
+  expect(count).toBe(initialCount)
+  expect(response.status).toBe(400)
+  expect(response.body.error).toBeDefined()
+})
+
+test('not created if username is under 3 characters long', async () => {
+  const initialCount = await User.countDocuments({})
+  const user = {...userObject}
+  user.name = '12'
+  const response = await api.post('/api/users').send(user)
+  const count = await User.countDocuments({})
+
+  expect(count).toBe(initialCount)
+  expect(response.status).toBe(400)
+  expect(response.body.error).toBeDefined()
+})
+
+test('not created if password is under 3 characters long', async () => {
+  const initialCount = await User.countDocuments({})
+  const user = {...userObject}
+  user.password = '12'
+  await api.post('/api/users').send(userObject)
+  const response = await api.post('/api/users').send(userObject)
+  const count = await User.countDocuments({})
+
+  expect(count).toBe(initialCount)
+  expect(response.status).toBe(400)
+  expect(response.body.error).toBeDefined()
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
