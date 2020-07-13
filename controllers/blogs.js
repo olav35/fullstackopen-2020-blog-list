@@ -6,14 +6,14 @@ blogsRouter.get('', async (_request, response) => {
   response.json(blogs)
 })
 
-blogsRouter.post('', async (request, response) => {
-  const body = request.body
-  if(!body.title && !body.url) {
-    return response.status(400).send()
-  } else {
+blogsRouter.post('', async (request, response, next) => {
+  try {
+    const body = request.body
     const blog = new Blog(body)
     const result = await blog.save()
     response.status(201).json(result)
+  } catch (exception) {
+    next(exception)
   }
 })
 
