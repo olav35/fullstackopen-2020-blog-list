@@ -14,7 +14,7 @@ usersRouter.post('', async (request, response) => {
   const userObject = {
     name: body.name,
     username: body.username,
-    passwordHash: await bcrypt.hash(body.name, 10)
+    passwordHash: await bcrypt.hash(body.password, 10)
   }
   const user = new User(userObject)
   await user.save()
