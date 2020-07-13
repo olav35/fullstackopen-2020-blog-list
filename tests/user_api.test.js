@@ -5,8 +5,24 @@ const app = require('../app')
 
 const api = supertest(app)
 
+const initialUsers = [
+  {
+    name: 'Ola Normann',
+    username: 'normann',
+    passwordHash: 'hufdhauifdbuia'
+  },
+  {
+    name: 'Kari Normann',
+    username: 'normann',
+    passwordHash: 'bfdhiabuiffbudi'
+  }
+]
+
 beforeEach(async () => {
   await User.deleteMany({})
+
+  const posts = initialUsers.map(user => new User(user).save())
+  await Promise.all(posts)
 })
 
 const userObject = {
