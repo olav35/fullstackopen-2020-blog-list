@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 const config = require('./utils/config')
 const blogsRouter = require('./controllers/blogs')
 const usersRouter = require('./controllers/users')
+mongoose.set('useCreateIndex', true)
 
 mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 
