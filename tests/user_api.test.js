@@ -83,7 +83,7 @@ test('not created if username is not unique', async () => {
   const response = await api.post('/api/users').send(userObject)
   const count = await User.countDocuments({})
 
-  expect(count).toBe(initialCount)
+  expect(count).toBe(initialCount + 1)
   expect(response.status).toBe(400)
   expect(response.body.error).toBeDefined()
 })
@@ -91,7 +91,7 @@ test('not created if username is not unique', async () => {
 test('not created if username is under 3 characters long', async () => {
   const initialCount = await User.countDocuments({})
   const user = {...userObject}
-  user.name = '12'
+  user.username = '12'
   const response = await api.post('/api/users').send(user)
   const count = await User.countDocuments({})
 
@@ -104,8 +104,7 @@ test('not created if password is under 3 characters long', async () => {
   const initialCount = await User.countDocuments({})
   const user = {...userObject}
   user.password = '12'
-  await api.post('/api/users').send(userObject)
-  const response = await api.post('/api/users').send(userObject)
+  const response = await api.post('/api/users').send(user)
   const count = await User.countDocuments({})
 
   expect(count).toBe(initialCount)
