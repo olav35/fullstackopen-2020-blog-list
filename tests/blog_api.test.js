@@ -139,6 +139,19 @@ test('blog liking works', async () => {
   expect(updatedBlog.likes).toBe(blog.likes)
 })
 
+test('adding blog fails with 401 Unauthorized if no token is provided', async () => {
+  const blog = {
+    title: 'Lorem ipsum',
+    author: 'Olav Fosse',
+    url: 'https://fossegr.im',
+    likes: 99912
+  }
+
+  const response = await api.post('/api/blogs').send(blog)
+
+  expect(response.status).toBe(401)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
