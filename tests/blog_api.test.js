@@ -115,7 +115,7 @@ test('lack of title and url property results in 400 Bad Request status code', as
     likes: 10
   }
 
-  const response = await api.post('/api/blogs').send(blog)
+  const response = await api.post('/api/blogs').auth(await getToken(), {type: 'bearer'}).send(blog)
   expect(response.status).toBe(400)
 })
 
