@@ -91,7 +91,7 @@ test('post creation works', async () => {
     likes: 99912
   }
 
-  await api.post('/api/blogs').send(blog).expect(201)
+  await api.post('/api/blogs').auth(await getToken(), {type: 'bearer'}).send(blog).expect(201)
 
   const response = await api.get('/api/blogs')
 
