@@ -105,7 +105,7 @@ test('lack of likes property results in 0 in api', async () => {
     url: 'https://fossegr.im'
   }
 
-  const response = await api.post('/api/blogs').send(blog)
+  const response = await api.post('/api/blogs').auth(await getToken(), {type: 'bearer'}).send(blog)
   expect(response.body.likes).toBe('0')
 })
 
