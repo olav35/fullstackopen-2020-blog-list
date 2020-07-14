@@ -3,8 +3,9 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 const supertest = require('supertest')
 const app = require('../app')
-const {INTERNET_SPEED} = require('../utils/config')
+const {INTERNET_SPEED, SECRET} = require('../utils/config')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 
 const api = supertest(app)
@@ -34,7 +35,6 @@ const userObject = {
   username: 'olav',
   passwordHash: bcrypt.hashSync(userPassword, 10)
 }
-
 
 beforeEach(async () => {
   await Blog.deleteMany({})
@@ -118,7 +118,10 @@ test('blog deletion works', async () => {
   const initialCount = await Blog.countDocuments({})
   const blog = await Blog.findOne({})
 
-  await api.delete(`/api/blogs/${blog.id}`).expect(200)
+  const response = await api.post('/api/login').send({...userObject, password: userPassword})
+  const token = response.body.token
+
+  await api.delete(`/api/blogs/${blog.id}`).auth(token, { type: 'bearer'}).expect(200)
 
   const count = await Blog.countDocuments({})
   expect(count).toBe(initialCount - 1)
