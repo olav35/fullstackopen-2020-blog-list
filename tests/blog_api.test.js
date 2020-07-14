@@ -36,6 +36,11 @@ const userObject = {
   passwordHash: bcrypt.hashSync(userPassword, 10)
 }
 
+const getToken = async () => {
+  const response = await api.post('/api/login').send({...userObject, password: userPassword})
+  return response.body.token
+}
+
 beforeEach(async () => {
   await Blog.deleteMany({})
   await User.deleteMany({})
@@ -115,13 +120,10 @@ test('lack of title and url property results in 400 Bad Request status code', as
 })
 
 test('blog deletion works', async () => {
-  const initialCount = await Blog.countDocuments({})
   const blog = await Blog.findOne({})
+  const initialCount = await Blog.countDocuments({})
 
-  const response = await api.post('/api/login').send({...userObject, password: userPassword})
-  const token = response.body.token
-
-  await api.delete(`/api/blogs/${blog.id}`).auth(token, { type: 'bearer'}).expect(200)
+  await api.delete(`/api/blogs/${blog.id}`).auth(await getToken(), { type: 'bearer'}).expect(200)
 
   const count = await Blog.countDocuments({})
   expect(count).toBe(initialCount - 1)
