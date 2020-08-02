@@ -3,6 +3,7 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 const {SECRET} = require('../utils/config')
+const mongoose = require('mongoose')
 
 blogsRouter.get('', async (_request, response) => {
   const fields = {
@@ -30,8 +31,8 @@ blogsRouter.post('', async (request, response) => {
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
+  console.log(request.token)
   const decodedToken = jwt.verify(request.token, SECRET)
-  
   if(!request.token || !decodedToken.id){
     return response.status(401).json({error: 'token missing or invalid'})
   }
@@ -48,7 +49,7 @@ blogsRouter.delete('/:id', async (request, response) => {
 })
 
 blogsRouter.put('/:id', async (request, response) => {
-  await Blog.findByIdAndUpdate(request.params.id, request.body)
+  await Blog.findByIdAndUpdate(request.params.id, {...request.body, user: mongoose.Types.ObjectId(request.body.user)})
   response.status(200).send(request.body)
 })
 

@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "NODE_ENV=production node index.js",
-    "dev": "NODE_ENE=development nodemon index.js",
-    "test": "NODE_ENV=test jest --verbose --runInBand"
+    "dev": "NODE_ENV=development nodemon index.js",
+    "test": "NODE_ENV=test jest --verbose --runInBand",
+    "cypress_test": "NODE_ENV=test nodemon index.js"
   },
   "author": "Olav Fosse",
   "license": "UNLICENSED",
